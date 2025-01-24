@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics Building Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            background-image: url('the kill.webp'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+            background-color: rgba(97, 74, 224, 0.562);
+            border-radius: 15px;
+        }
+
+        #generateLesson, #previousLesson, #play {
+            display: inline-block;
+            min-width: 140px;
+            margin: 20px 10px;
+            padding: 10px 20px;
+            background: #ffc107;
+            color: black;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #generateLesson:hover, #previousLesson:hover, #play {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+        .index-button:hover {
+            background: #666560;
+            transform: scale(1.05);
+        }
+
+        #instruction {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0 auto 20px auto;
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #000000;
+            padding: 10px 20px;
+            border-radius: 7px;
+            display: block;
+            max-width: 1000px;
+            width: fit-content;
+        }
+
+        #wordBank, #sentenceContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            min-height: 100px;
+            min-width: 1000px;
+            max-height: 120px;
+            width: 80%;
+            max-width: 600px;
+            margin: 10px 0;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            overflow-y: auto;
+        }
+
+        .word {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            min-width: 70px;
+            display: inline-block;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .word:hover {
+            background: #0056b3;
+            transform: scale(1.01);
+        }
+
+        .check-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #checkSentence {
+            min-width: 80px;
+            min-height: 44px;
+            padding: 10px 18px;
+            background-color: rgba(5, 160, 70, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        #checkSentence:hover {
+            background: #218838;
+            transform: scale(1.1);
+        }
+
+        div.button-container {
+            text-align: center;
+        }
+
+        #feedback {
+            min-width: 50px;
+            min-height: 24px;
+            padding: 10px 18px;
+            background-color: rgba(26, 26, 27, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .index-buttons-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .play-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #playButton {
+            display: none;
+        }
+
+
+        #playButton {
+            min-width: 80px;
+            padding: 10px 20px;
+            background: rgba(204, 66, 24, 0.8);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #playButton:hover {
+            background: #882821;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>THE KILL</h1>
+    <div>
+        <p id="instruction"></p>
+        <div id="sentenceContainer"></div>
+        <div id="wordBank"></div>
+        <div class="check-container">
+            <button id="checkSentence">Check</button>
+            <p id="feedback"></p>
+        </div>
+        <div class="button-container">
+            <button id="previousLesson">PREVIOUS</button>
+            <button id="generateLesson">NEXT</button>
+        </div>
+        <div class="play-container">
+            <button id="playButton">PLAY</button>
+            <audio id="audioPlayer" src="mp3/thekill1.mp3"></audio>
+        </div>
+    </div>
+
+    <script>
+        const sentences = [
+            { en: "What if I wanted to break", ru: "Что если бы я хотел сломаться?" }, 
+            { en: "Laugh it all off in your face?", ru: "Посмеяться тебе в лицо?" },
+            { en: "What would you do?", ru: "Что бы ты сделал?" },
+            { en: "What if I fell to the floor", ru: "Что если бы я упал на пол?" }, // 4 
+            { en: "Couldn't take this anymore?", ru: "Не смог бы больше этого вынести?" }, // 5
+            { en: "What would you do, do, do?", ru: "Что бы ты сделал?" },
+            { en: "Come, break me down", ru: "Иди, сломай меня." }, // 7
+            { en: "Bury me, bury me", ru: "Похорони меня, похорони меня." }, // 8
+            { en: "I am finished with you", ru: "Я закончил с тобой." },
+            { en: "What if I wanted to fight beg for the rest of my life?", ru: "Что если бы я хотел бороться, умолять до конца своей жизни?" },
+            { en: "What would you do?", ru: "Что бы ты сделал?" },
+            { en: "You say you wanted more", ru: "Ты говоришь, что хотел большего." }, // 12
+            { en: "What are you waiting for?", ru: "Чего ты ждешь?" },                   // 13
+            { en: "I'm not running from you", ru: "Я не бегу от тебя." }, // 14
+            { en: "Look in my eyes", ru: "Посмотри в мои глаза." }, // 15
+            { en: "You're killing me, killing me", ru: "Ты убиваешь меня, убиваешь меня." }, // 16
+            { en: "All I wanted was you", ru: "Все, чего я хотел, — это ты." }, // 17
+        ];
+
+        let currentIndex = 0;
+        let voices = [];
+
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+            return voices.find(voice => voice.name === 'Google UK English Male') || voices[0];
+        }
+
+        function playAudio(text) {
+            if ('speechSynthesis' in window) {
+                if (voices.length === 0) {
+                    voices = window.speechSynthesis.getVoices();
+                }
+
+                const chosenVoice = loadVoices();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.voice = chosenVoice;
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech synthesis is not supported in your browser.");
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                voices = window.speechSynthesis.getVoices();
+            };
+        }
+
+        function setupDragAndDrop(sentence) {
+            const words = sentence.en.split(" ").sort(() => Math.random() - 0.5);
+            const wordBank = document.getElementById("wordBank");
+            const sentenceContainer = document.getElementById("sentenceContainer");
+            const instruction = document.getElementById("instruction");
+            const feedback = document.getElementById("feedback");
+
+            instruction.textContent = `"${sentence.ru}"`;
+            wordBank.innerHTML = "";
+            sentenceContainer.innerHTML = "";
+            feedback.textContent = "";
+
+            words.forEach(word => {
+                const wordElement = document.createElement("span");
+                wordElement.textContent = word;
+                wordElement.classList.add("word");
+                wordElement.setAttribute("draggable", "true");
+                wordElement.setAttribute("data-word", word);
+
+                // Обработчик кликов
+                wordElement.addEventListener("click", () => {
+                    if (wordElement.parentElement === wordBank) {
+                        sentenceContainer.appendChild(wordElement);
+                    } else {
+                        wordBank.appendChild(wordElement);
+                    }
+                });
+
+                // Обработчик начала перетаскивания
+                wordElement.addEventListener("dragstart", (event) => {
+                    event.dataTransfer.setData("text/plain", wordElement.getAttribute("data-word"));
+                    wordElement.classList.add("dragging");
+                });
+
+                // Удаление класса dragging
+                wordElement.addEventListener("dragend", () => {
+                    wordElement.classList.remove("dragging");
+                    removeDropIndicators();
+                });
+
+                wordBank.appendChild(wordElement);
+            });
+
+            // Настройка контейнеров
+            [wordBank, sentenceContainer].forEach(container => {
+                container.addEventListener("dragover", (event) => {
+                    event.preventDefault();
+
+                    // Получаем перетаскиваемый элемент и ближайший к курсору
+                    const draggingElement = document.querySelector(".dragging");
+                    const afterElement = getDragAfterElement(container, event.clientX);
+
+                    removeDropIndicators();
+
+                    // Добавляем индикатор вставки
+                    const dropIndicator = document.createElement("div");
+                    dropIndicator.classList.add("drop-indicator");
+                    if (afterElement == null) {
+                        container.appendChild(dropIndicator);
+                    } else {
+                        container.insertBefore(dropIndicator, afterElement);
+                    }
+                });
+
+                container.addEventListener("drop", (event) => {
+                    event.preventDefault();
+                    const draggingElement = document.querySelector(".dragging");
+                    const dropIndicator = container.querySelector(".drop-indicator");
+
+                    if (dropIndicator) {
+                        container.insertBefore(draggingElement, dropIndicator);
+                        removeDropIndicators();
+                    }
+                });
+
+                container.addEventListener("dragleave", () => {
+                    removeDropIndicators();
+                });
+            });
+
+            // Удаляет все индикаторы вставки
+            function removeDropIndicators() {
+                document.querySelectorAll(".drop-indicator").forEach(indicator => indicator.remove());
+            }
+
+            // Функция для определения элемента, после которого вставлять
+            function getDragAfterElement(container, x) {
+                const draggableElements = [...container.querySelectorAll(".word:not(.dragging)")];
+
+                return draggableElements.reduce(
+                    (closest, child) => {
+                        const box = child.getBoundingClientRect();
+                        const offset = x - box.left - box.width / 2;
+
+                        if (offset < 0 && offset > closest.offset) {
+                            return { offset: offset, element: child };
+                        } else {
+                            return closest;
+                        }
+                    },
+                    { offset: Number.NEGATIVE_INFINITY }
+                ).element;
+            }
+        }
+
+
+
+
+
+        document.getElementById("checkSentence").onclick = () => {
+            const userSentence = Array.from(sentenceContainer.children)
+                .map(wordElement => wordElement.textContent)
+                .join(" ");
+            const playButton = document.getElementById("playButton");
+            const feedback = document.getElementById("feedback");
+            
+            // Получаем текущее предложение
+            const sentence = sentences[currentIndex];
+
+            if (userSentence === sentence.en) {
+                playAudio(sentence.en);
+                feedback.textContent = "Right! 👍";
+                feedback.style.color = "green";
+                playButton.style.display = "inline-block"; // Показываем кнопку PLAY
+            } else {
+                feedback.textContent = "Wrong 👎";
+                feedback.style.color = "red";
+                playButton.style.display = "none"; // Скрываем кнопку PLAY
+            }
+        };
+
+        
+
+        function showNextLesson() {
+            currentIndex = (currentIndex + 1) % sentences.length;
+            setupDragAndDrop(sentences[currentIndex]);
+            changeAudio();
+
+            // Скрываем кнопку PLAY при переходе к следующему предложению
+            document.getElementById("playButton").style.display = "none";
+        }
+
+        function showPreviousLesson() {
+            currentIndex = (currentIndex - 1 + sentences.length) % sentences.length;
+            setupDragAndDrop(sentences[currentIndex]);
+            changeAudio();
+
+            // Скрываем кнопку PLAY при переходе к предыдущему предложению
+            document.getElementById("playButton").style.display = "none";
+        }
+
+
+        function changeAudio() {
+            const audioPlayer = document.getElementById("audioPlayer");
+            audioPlayer.src = `mp3/thekill${currentIndex + 1}.mp3`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setupDragAndDrop(sentences[currentIndex]);
+
+            document.getElementById("generateLesson").addEventListener("click", showNextLesson);
+            document.getElementById("previousLesson").addEventListener("click", showPreviousLesson);
+
+            document.getElementById("playButton").addEventListener("click", () => {
+                const audioPlayer = document.getElementById("audioPlayer");
+                audioPlayer.play();
+            });
+        });
+
+
+
+        
+    </script>
+</body>
+</html>
