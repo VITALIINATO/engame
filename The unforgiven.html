@@ -9,37 +9,38 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            justify-content: flex-start;
+            min-height: 100vh;
             background-color: #f4f4f4;
-            background-image: url('theunfprgiven.webp'); 
+            background-image: url('in the end.webp');
             background-size: cover;
             background-position: center;
         }
 
         h1 {
             margin-bottom: 20px;
-            font-size: 2rem;
+            font-size: 1.5rem;
             text-align: center;
             background-color: rgba(97, 74, 224, 0.562);
             border-radius: 15px;
+            padding: 10px;
         }
 
         #generateLesson, #previousLesson, #play {
             display: inline-block;
-            min-width: 140px;
-            margin: 20px 10px;
-            padding: 10px 20px;
+            min-width: 100px;
+            margin: 10px 5px;
+            padding: 8px 16px;
             background: #ffc107;
             color: black;
             border: none;
             border-radius: 15px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             transition: background 0.3s, transform 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -48,23 +49,18 @@
             background: #e0a800;
             transform: scale(1.05);
         }
-        .index-button:hover {
-            background: #666560;
-            transform: scale(1.05);
-        }
 
         #instruction {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
             margin: 0 auto 20px auto;
             background-color: rgba(255, 255, 255, 0.5);
             color: #000000;
-            padding: 10px 20px;
+            padding: 10px;
             border-radius: 7px;
             display: block;
-            max-width: 1000px;
-            width: fit-content;
+            width: 90%;
         }
 
         #wordBank, #sentenceContainer {
@@ -72,13 +68,10 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            min-height: 100px;
-            min-width: 1000px;
-            max-height: 180px;
-            width: 80%;
-            max-width: 600px;
+            gap: 8px;
+            padding: 8px;
+            min-height: 80px;
+            width: 90%;
             margin: 10px 0;
             background-color: transparent;
             border: none;
@@ -87,16 +80,16 @@
         }
 
         .word {
-            padding: 10px 15px;
+            padding: 8px 12px;
             background: #007bff;
             color: white;
             border-radius: 5px;
             cursor: pointer;
             user-select: none;
             text-align: center;
-            min-width: 70px;
+            min-width: 60px;
             display: inline-block;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: background 0.3s, transform 0.2s;
         }
 
@@ -109,20 +102,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             margin-top: 20px;
         }
 
         #checkSentence {
-            min-width: 80px;
-            min-height: 44px;
-            padding: 10px 18px;
+            min-width: 70px;
+            min-height: 40px;
+            padding: 8px 16px;
             background-color: rgba(5, 160, 70, 0.8);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background 0.3s, transform 0.2s;
             font-weight: bold;
         }
@@ -137,22 +130,17 @@
         }
 
         #feedback {
-            min-width: 50px;
-            min-height: 24px;
-            padding: 10px 18px;
+            min-width: 40px;
+            min-height: 20px;
+            padding: 8px 16px;
             background-color: rgba(26, 26, 27, 0.8);
             color: white;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background 0.3s, transform 0.2s;
-        }
-
-        .index-buttons-container {
-            margin-top: 10px;
-            text-align: center;
         }
 
         .play-container {
@@ -163,13 +151,8 @@
         }
 
         #playButton {
-            display: none;
-        }
-
-
-        #playButton {
-            min-width: 80px;
-            padding: 10px 20px;
+            min-width: 70px;
+            padding: 8px 16px;
             background: rgba(204, 66, 24, 0.8);
             color: white;
             border: none;
@@ -186,7 +169,7 @@
         }
 
         #current_tense {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             text-align: center;
             margin: 10px auto 20px auto;
@@ -195,10 +178,32 @@
             padding: 5px 10px;
             border-radius: 5px;
             display: block;
-            max-width: 800px;
-            width: fit-content;
+            width: 90%;
         }
 
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            #instruction {
+                font-size: 1rem;
+            }
+
+            .word {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            #checkSentence, #playButton {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            #current_tense {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
