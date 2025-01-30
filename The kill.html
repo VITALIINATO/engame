@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lyrics Building Game</title>
+    <title>Sentence Building Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,7 +76,7 @@
             padding: 10px;
             min-height: 100px;
             min-width: 1000px;
-            max-height: 120px;
+            max-height: 180px;
             width: 80%;
             max-width: 600px;
             margin: 10px 0;
@@ -184,12 +184,28 @@
             background: #882821;
             transform: scale(1.05);
         }
+
+        #current_tense {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px auto 20px auto;
+            background-color: rgba(90, 90, 92, 0.8);
+            color: #080808;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: block;
+            max-width: 800px;
+            width: fit-content;
+        }
+
     </style>
 </head>
 <body>
     <h1>THE KILL</h1>
     <div>
         <p id="instruction"></p>
+        <p id="current_tense"></p>
         <div id="sentenceContainer"></div>
         <div id="wordBank"></div>
         <div class="check-container">
@@ -207,24 +223,24 @@
     </div>
 
     <script>
-        const sentences = [
-            { en: "What if I wanted to break", ru: "Что если бы я хотел сломаться?" }, 
-            { en: "Laugh it all off in your face?", ru: "Посмеяться тебе в лицо?" },
-            { en: "What would you do?", ru: "Что бы ты сделал?" },
-            { en: "What if I fell to the floor", ru: "Что если бы я упал на пол?" }, // 4 
-            { en: "Couldn't take this anymore?", ru: "Не смог бы больше этого вынести?" }, // 5
-            { en: "What would you do, do, do?", ru: "Что бы ты сделал?" },
-            { en: "Come, break me down", ru: "Иди, сломай меня." }, // 7
-            { en: "Bury me, bury me", ru: "Похорони меня, похорони меня." }, // 8
-            { en: "I am finished with you", ru: "Я закончил с тобой." },
-            { en: "What if I wanted to fight beg for the rest of my life?", ru: "Что если бы я хотел бороться, умолять до конца своей жизни?" },
-            { en: "What would you do?", ru: "Что бы ты сделал?" },
-            { en: "You say you wanted more", ru: "Ты говоришь, что хотел большего." }, // 12
-            { en: "What are you waiting for?", ru: "Чего ты ждешь?" },                   // 13
-            { en: "I'm not running from you", ru: "Я не бегу от тебя." }, // 14
-            { en: "Look in my eyes", ru: "Посмотри в мои глаза." }, // 15
-            { en: "You're killing me, killing me", ru: "Ты убиваешь меня, убиваешь меня." }, // 16
-            { en: "All I wanted was you", ru: "Все, чего я хотел, — это ты." }, // 17
+        const sentences = [        
+            { en: "What if I wanted to break", ru: "Что если бы я хотел сломаться?", tense: "Past Simple" },
+            { en: "Laugh it all off in your face?", ru: "Посмеяться тебе в лицо?", tense: "Present Simple" },
+            { en: "What would you do?", ru: "Что бы ты сделал?", tense: "Conditional" },
+            { en: "What if I fell to the floor", ru: "Что если бы я упал на пол?", tense: "Past Simple" },
+            { en: "Couldn't take this anymore?", ru: "Не смог бы больше этого вынести?", tense: "Past Simple" },
+            { en: "What would you do, do, do?", ru: "Что бы ты сделал?", tense: "Conditional" },
+            { en: "Come, break me down", ru: "Иди, сломай меня.", tense: "Imperative" },
+            { en: "Bury me, bury me", ru: "Похорони меня, похорони меня.", tense: "Imperative" },
+            { en: "I am finished with you", ru: "Я закончил с тобой.", tense: "Present Simple" },
+            { en: "What if I wanted to fight beg for the rest of my life?", ru: "Что если бы я хотел бороться, умолять до конца своей жизни?", tense: "Past Simple" },
+            { en: "What would you do?", ru: "Что бы ты сделал?", tense: "Conditional" },
+            { en: "You say you wanted more", ru: "Ты говоришь, что хотел большего.", tense: "Present Simple + Past Simple" },
+            { en: "What are you waiting for?", ru: "Чего ты ждешь?", tense: "Present Continuous" },
+            { en: "I'm not running from you", ru: "Я не бегу от тебя.", tense: "Present Continuous" },
+            { en: "Look in my eyes", ru: "Посмотри в мои глаза.", tense: "Imperative" },
+            { en: "You're killing me, killing me", ru: "Ты убиваешь меня, убиваешь меня.", tense: "Present Continuous" },
+            { en: "All I wanted was you", ru: "Все, чего я хотел, — это ты.", tense: "Past Simple" }
         ];
 
         let currentIndex = 0;
@@ -264,8 +280,14 @@
             const sentenceContainer = document.getElementById("sentenceContainer");
             const instruction = document.getElementById("instruction");
             const feedback = document.getElementById("feedback");
+            const currentTense = document.getElementById("current_tense");
 
+            // Устанавливаем текст подсказки
             instruction.textContent = `"${sentence.ru}"`;
+
+            // Выводим время в отдельный блок
+            currentTense.textContent = `${sentence.tense}`;
+
             wordBank.innerHTML = "";
             sentenceContainer.innerHTML = "";
             feedback.textContent = "";
@@ -277,7 +299,6 @@
                 wordElement.setAttribute("draggable", "true");
                 wordElement.setAttribute("data-word", word);
 
-                // Обработчик кликов
                 wordElement.addEventListener("click", () => {
                     if (wordElement.parentElement === wordBank) {
                         sentenceContainer.appendChild(wordElement);
@@ -286,13 +307,11 @@
                     }
                 });
 
-                // Обработчик начала перетаскивания
                 wordElement.addEventListener("dragstart", (event) => {
                     event.dataTransfer.setData("text/plain", wordElement.getAttribute("data-word"));
                     wordElement.classList.add("dragging");
                 });
 
-                // Удаление класса dragging
                 wordElement.addEventListener("dragend", () => {
                     wordElement.classList.remove("dragging");
                     removeDropIndicators();
@@ -301,18 +320,15 @@
                 wordBank.appendChild(wordElement);
             });
 
-            // Настройка контейнеров
+            // Настройка drag-and-drop
             [wordBank, sentenceContainer].forEach(container => {
                 container.addEventListener("dragover", (event) => {
                     event.preventDefault();
-
-                    // Получаем перетаскиваемый элемент и ближайший к курсору
                     const draggingElement = document.querySelector(".dragging");
                     const afterElement = getDragAfterElement(container, event.clientX);
 
                     removeDropIndicators();
 
-                    // Добавляем индикатор вставки
                     const dropIndicator = document.createElement("div");
                     dropIndicator.classList.add("drop-indicator");
                     if (afterElement == null) {
@@ -338,35 +354,29 @@
                 });
             });
 
-            // Удаляет все индикаторы вставки
             function removeDropIndicators() {
                 document.querySelectorAll(".drop-indicator").forEach(indicator => indicator.remove());
             }
 
-            // Функция для определения элемента, после которого вставлять
             function getDragAfterElement(container, x) {
                 const draggableElements = [...container.querySelectorAll(".word:not(.dragging)")];
 
-                return draggableElements.reduce(
-                    (closest, child) => {
-                        const box = child.getBoundingClientRect();
-                        const offset = x - box.left - box.width / 2;
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = x - box.left - box.width / 2;
 
-                        if (offset < 0 && offset > closest.offset) {
-                            return { offset: offset, element: child };
-                        } else {
-                            return closest;
-                        }
-                    },
-                    { offset: Number.NEGATIVE_INFINITY }
-                ).element;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
             }
         }
 
 
 
-
-
+        
         document.getElementById("checkSentence").onclick = () => {
             const userSentence = Array.from(sentenceContainer.children)
                 .map(wordElement => wordElement.textContent)
@@ -412,20 +422,47 @@
 
         function changeAudio() {
             const audioPlayer = document.getElementById("audioPlayer");
-            audioPlayer.src = `thekill${currentIndex + 1}.mp3`;
+            audioPlayer.src = `mp3/thekill${currentIndex + 1}.mp3`;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            setupDragAndDrop(sentences[currentIndex]);
+        
+    document.addEventListener("DOMContentLoaded", () => {
+        setupDragAndDrop(sentences[currentIndex]);
 
-            document.getElementById("generateLesson").addEventListener("click", showNextLesson);
-            document.getElementById("previousLesson").addEventListener("click", showPreviousLesson);
+        const playButton = document.getElementById("playButton");
+        const audioPlayer = document.getElementById("audioPlayer");
 
-            document.getElementById("playButton").addEventListener("click", () => {
-                const audioPlayer = document.getElementById("audioPlayer");
-                audioPlayer.play();
-            });
+        document.getElementById("generateLesson").addEventListener("click", () => {
+            showNextLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
         });
+
+        document.getElementById("previousLesson").addEventListener("click", () => {
+            showPreviousLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
+        });
+
+        playButton.addEventListener("click", () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.textContent = "PAUSE";
+            } else {
+                audioPlayer.pause();
+                playButton.textContent = "PLAY";
+            }
+        });
+
+        audioPlayer.addEventListener("ended", () => {
+            playButton.textContent = "PLAY"; // Возвращаем текст кнопки на "PLAY" после окончания воспроизведения
+        });
+
+        function resetPlayButton() {
+            audioPlayer.pause(); // Останавливаем воспроизведение
+            audioPlayer.currentTime = 0; // Сбрасываем аудио в начало
+            playButton.textContent = "PLAY"; // Устанавливаем текст кнопки на "PLAY"
+        }
+    });
+
 
 
 
