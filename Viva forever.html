@@ -184,12 +184,28 @@
             background: #882821;
             transform: scale(1.05);
         }
+
+        #current_tense {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px auto 20px auto;
+            background-color: rgba(90, 90, 92, 0.8);
+            color: #080808;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: block;
+            max-width: 800px;
+            width: fit-content;
+        }
+
     </style>
 </head>
 <body>
     <h1>VIVA FOREVER</h1>
     <div>
         <p id="instruction"></p>
+        <p id="current_tense"></p>
         <div id="sentenceContainer"></div>
         <div id="wordBank"></div>
         <div class="check-container">
@@ -208,23 +224,24 @@
 
     <script>
         const sentences = [
-        { en: "Do you still remember how we used to be?", ru: "Ты все еще помнишь, какими мы были?" }, // 1
-        { en: "Feeling together, believing whatever my love has said to me", ru: "Чувствуя единство, веря всему, что моя любовь сказала мне" }, // 2
-        { en: "Both of us were dreamers", ru: "Мы оба были мечтателями" }, // 3
-        { en: "Young love in the sun", ru: "Молодая любовь на солнце" }, // 4
-        { en: "Felt like my savior, my spirit I gave you", ru: "Ты был словно моим спасителем, я отдал тебе свою душу." }, // 5
-        { en: "We'd only just begun", ru: "Мы только начали" }, // 6
         
-        { en: "Hasta mañana, always be mine", ru: "До завтра, всегда будь моим" }, // 7
-        { en: "Viva forever, I'll be waiting, everlasting, like the sun", ru: "Да здравствует вечность, я буду ждать, вечный, как солнце" }, // 8
-        { en: "Live forever, for the moment ever searching for the one.", ru: "Живи вечно, ради этого момента, вечно в поисках единственного." }, // 9
+        { en: "Do you still remember how we used to be?", ru: "Ты все еще помнишь, какими мы были?", tense: "Present Simple" },
+        { en: "Feeling together, believing whatever my love has said to me", ru: "Чувствуя единство, веря всему, что моя любовь сказала мне", tense: "Present Continuous + Present Perfect" },
+        { en: "Both of us were dreamers", ru: "Мы оба были мечтателями", tense: "Past Simple" },
+        { en: "Young love in the sun", ru: "Молодая любовь на солнце", tense: "Past Simple" },
+        { en: "Felt like my savior, my spirit I gave you", ru: "Ты был словно моим спасителем, я отдал тебе свою душу.", tense: "Past Simple" },
+        { en: "We'd only just begun", ru: "Мы только начали", tense: "Past Continuous" },
 
-        { en: "Yes, I still remember every whispered word", ru: "Да, я все еще помню каждое шепотом сказанное слово" }, // 10
-        { en: "The touch of your skin, giving life from within like a love song never heard, slippin' through our fingers, like the sands of time", ru: "Прикосновение твоей кожи, дарящее жизнь изнутри, как неуслышанная песня о любви, ускользает сквозь наши пальцы, как песок времени." }, //11
-        { en: "Promises made, every memory saved as reflections in my mind", ru: "Обещания, которые были даны, каждое воспоминание сохранены, как отражения в моем разуме." }, // 12
+        { en: "Hasta mañana, always be mine", ru: "До завтра, всегда будь моим", tense: "Imperative" },
+        { en: "Viva forever, I'll be waiting, everlasting, like the sun", ru: "Да здравствует вечность, я буду ждать, вечный, как солнце", tense: "Future Continuous" },
+        { en: "Live forever, for the moment ever searching for the one.", ru: "Живи вечно, ради этого момента, вечно в поисках единственного.", tense: "Imperative + Present Continuous" },
 
-        { en: "Back where I belong now, was it just a dream?", ru: "Возващаюсь где я сейчас, был ли это просто сон?" }, // 13
-        { en: "Feelings unfold, they will never be sold", ru: "Чувства раскрываются, их никогда не продадут и секрет в безопасности со мной." }, // 14
+        { en: "Yes, I still remember every whispered word", ru: "Да, я все еще помню каждое шепотом сказанное слово", tense: "Present Simple" },
+        { en: "The touch of your skin, giving life from within like a love song never heard, slippin' through our fingers, like the sands of time", ru: "Прикосновение твоей кожи, дарящее жизнь изнутри, как неуслышанная песня о любви, ускользает сквозь наши пальцы, как песок времени.", tense: "Present Continuous" },
+        { en: "Promises made, every memory saved as reflections in my mind", ru: "Обещания, которые были даны, каждое воспоминание сохранены, как отражения в моем разуме.", tense: "Past Simple + Past Participle" },
+
+        { en: "Back where I belong now, was it just a dream?", ru: "Возвращаюсь туда, где я сейчас, был ли это просто сон?", tense: "Past Simple" },
+        { en: "Feelings unfold, they will never be sold", ru: "Чувства раскрываются, их никогда не продадут и секрет в безопасности со мной.", tense: "Present Simple + Future Simple" }
 
         ];
 
@@ -265,8 +282,14 @@
             const sentenceContainer = document.getElementById("sentenceContainer");
             const instruction = document.getElementById("instruction");
             const feedback = document.getElementById("feedback");
+            const currentTense = document.getElementById("current_tense");
 
+            // Устанавливаем текст подсказки
             instruction.textContent = `"${sentence.ru}"`;
+
+            // Выводим время в отдельный блок
+            currentTense.textContent = `${sentence.tense}`;
+
             wordBank.innerHTML = "";
             sentenceContainer.innerHTML = "";
             feedback.textContent = "";
@@ -278,7 +301,6 @@
                 wordElement.setAttribute("draggable", "true");
                 wordElement.setAttribute("data-word", word);
 
-                // Обработчик кликов
                 wordElement.addEventListener("click", () => {
                     if (wordElement.parentElement === wordBank) {
                         sentenceContainer.appendChild(wordElement);
@@ -287,13 +309,11 @@
                     }
                 });
 
-                // Обработчик начала перетаскивания
                 wordElement.addEventListener("dragstart", (event) => {
                     event.dataTransfer.setData("text/plain", wordElement.getAttribute("data-word"));
                     wordElement.classList.add("dragging");
                 });
 
-                // Удаление класса dragging
                 wordElement.addEventListener("dragend", () => {
                     wordElement.classList.remove("dragging");
                     removeDropIndicators();
@@ -302,18 +322,15 @@
                 wordBank.appendChild(wordElement);
             });
 
-            // Настройка контейнеров
+            // Настройка drag-and-drop
             [wordBank, sentenceContainer].forEach(container => {
                 container.addEventListener("dragover", (event) => {
                     event.preventDefault();
-
-                    // Получаем перетаскиваемый элемент и ближайший к курсору
                     const draggingElement = document.querySelector(".dragging");
                     const afterElement = getDragAfterElement(container, event.clientX);
 
                     removeDropIndicators();
 
-                    // Добавляем индикатор вставки
                     const dropIndicator = document.createElement("div");
                     dropIndicator.classList.add("drop-indicator");
                     if (afterElement == null) {
@@ -339,30 +356,27 @@
                 });
             });
 
-            // Удаляет все индикаторы вставки
             function removeDropIndicators() {
                 document.querySelectorAll(".drop-indicator").forEach(indicator => indicator.remove());
             }
 
-            // Функция для определения элемента, после которого вставлять
             function getDragAfterElement(container, x) {
                 const draggableElements = [...container.querySelectorAll(".word:not(.dragging)")];
 
-                return draggableElements.reduce(
-                    (closest, child) => {
-                        const box = child.getBoundingClientRect();
-                        const offset = x - box.left - box.width / 2;
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = x - box.left - box.width / 2;
 
-                        if (offset < 0 && offset > closest.offset) {
-                            return { offset: offset, element: child };
-                        } else {
-                            return closest;
-                        }
-                    },
-                    { offset: Number.NEGATIVE_INFINITY }
-                ).element;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
             }
         }
+
+
 
         
         document.getElementById("checkSentence").onclick = () => {
@@ -413,17 +427,44 @@
             audioPlayer.src = `vivaforever${currentIndex + 1}.mp3`;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            setupDragAndDrop(sentences[currentIndex]);
+        
+    document.addEventListener("DOMContentLoaded", () => {
+        setupDragAndDrop(sentences[currentIndex]);
 
-            document.getElementById("generateLesson").addEventListener("click", showNextLesson);
-            document.getElementById("previousLesson").addEventListener("click", showPreviousLesson);
+        const playButton = document.getElementById("playButton");
+        const audioPlayer = document.getElementById("audioPlayer");
 
-            document.getElementById("playButton").addEventListener("click", () => {
-                const audioPlayer = document.getElementById("audioPlayer");
-                audioPlayer.play();
-            });
+        document.getElementById("generateLesson").addEventListener("click", () => {
+            showNextLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
         });
+
+        document.getElementById("previousLesson").addEventListener("click", () => {
+            showPreviousLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
+        });
+
+        playButton.addEventListener("click", () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.textContent = "PAUSE";
+            } else {
+                audioPlayer.pause();
+                playButton.textContent = "PLAY";
+            }
+        });
+
+        audioPlayer.addEventListener("ended", () => {
+            playButton.textContent = "PLAY"; // Возвращаем текст кнопки на "PLAY" после окончания воспроизведения
+        });
+
+        function resetPlayButton() {
+            audioPlayer.pause(); // Останавливаем воспроизведение
+            audioPlayer.currentTime = 0; // Сбрасываем аудио в начало
+            playButton.textContent = "PLAY"; // Устанавливаем текст кнопки на "PLAY"
+        }
+    });
+
 
 
 
