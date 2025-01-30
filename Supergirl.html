@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Building Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            background-image: url('supergirl.webp'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+            background-color: rgba(97, 74, 224, 0.562);
+            border-radius: 15px;
+        }
+
+        #generateLesson, #previousLesson, #play {
+            display: inline-block;
+            min-width: 140px;
+            margin: 20px 10px;
+            padding: 10px 20px;
+            background: #ffc107;
+            color: black;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #generateLesson:hover, #previousLesson:hover, #play {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+        .index-button:hover {
+            background: #666560;
+            transform: scale(1.05);
+        }
+
+        #instruction {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0 auto 20px auto;
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #000000;
+            padding: 10px 20px;
+            border-radius: 7px;
+            display: block;
+            max-width: 1000px;
+            width: fit-content;
+        }
+
+        #wordBank, #sentenceContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            min-height: 100px;
+            min-width: 1000px;
+            max-height: 180px;
+            width: 80%;
+            max-width: 600px;
+            margin: 10px 0;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            overflow-y: auto;
+        }
+
+        .word {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            min-width: 70px;
+            display: inline-block;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .word:hover {
+            background: #0056b3;
+            transform: scale(1.01);
+        }
+
+        .check-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #checkSentence {
+            min-width: 80px;
+            min-height: 44px;
+            padding: 10px 18px;
+            background-color: rgba(5, 160, 70, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        #checkSentence:hover {
+            background: #218838;
+            transform: scale(1.1);
+        }
+
+        div.button-container {
+            text-align: center;
+        }
+
+        #feedback {
+            min-width: 50px;
+            min-height: 24px;
+            padding: 10px 18px;
+            background-color: rgba(26, 26, 27, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .index-buttons-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .play-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #playButton {
+            display: none;
+        }
+
+
+        #playButton {
+            min-width: 80px;
+            padding: 10px 20px;
+            background: rgba(204, 66, 24, 0.8);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #playButton:hover {
+            background: #882821;
+            transform: scale(1.05);
+        }
+
+        #current_tense {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px auto 20px auto;
+            background-color: rgba(90, 90, 92, 0.8);
+            color: #080808;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: block;
+            max-width: 800px;
+            width: fit-content;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>SUPERGIRL</h1>
+    <div>
+        <p id="instruction"></p>
+        <p id="current_tense"></p>
+        <div id="sentenceContainer"></div>
+        <div id="wordBank"></div>
+        <div class="check-container">
+            <button id="checkSentence">Check</button>
+            <p id="feedback"></p>
+        </div>
+        <div class="button-container">
+            <button id="previousLesson">PREVIOUS</button>
+            <button id="generateLesson">NEXT</button>
+        </div>
+        <div class="play-container">
+            <button id="playButton">PLAY</button>
+            <audio id="audioPlayer" src="mp3/supergirl1.mp3"></audio>
+        </div>
+    </div>
+
+    <script>
+        const sentences = [
+        // 1
+        { en: "You can tell by the way she walks that she's my girl.", 
+        ru: "Ты можешь понять по тому, как она идет, что она моя девушка.", 
+        tense: "Present Simple" },
+        // 2
+        { en: "You can tell by the way she talks, she rules the world.", 
+        ru: "Ты можешь понять по тому, как она говорит, как-будто она правит миром.", 
+        tense: "Present Simple" },
+        // 3
+        { en: "You can see in her eyes that no one is her chain.", 
+        ru: "Ты можешь увидеть в её глазах, что никто не её цепь (она свободна).", 
+        tense: "Present Simple" },
+        // 4
+        { en: "She's my girl, my supergirl.", 
+        ru: "Она моя девушка, моя супердевушка.", 
+        tense: "Present Simple" },
+
+
+
+        // 5
+        { en: "And then she'd say, 'It's okay.'", 
+        ru: "А потом она говорила: 'Все в порядке.'", 
+        tense: "Past Simple" },
+        // 6
+        { en: "'I got lost on the way, but I'm a supergirl.'", 
+        ru: "'Я заблудилась по дороге, но я супердевушка.'", 
+        tense: "Past Simple + Present Simple" },
+        // 7
+        { en: "And supergirls don't cry.", 
+        ru: "А супердевушки не плачут.", 
+        tense: "Present Simple" },
+        // 8
+        { en: "And then she'd say, 'It's alright.'", 
+        ru: "А потом она говорила: 'Все нормально.'", 
+        tense: "Past Simple" },
+        // 9
+        { en: "'I got home late last night, but I'm a supergirl.'", 
+        ru: "'Я пришла домой поздно прошлой ночью, но я супердевушка.'", 
+        tense: "Past Simple + Present Simple" },
+        // 10
+        { en: "And supergirls just fly.", 
+        ru: "А супердевушки просто летают.", 
+        tense: "Present Simple" },
+
+
+
+        // 11
+        { en: "And then she'd say that nothing can go wrong.", 
+        ru: "А потом она говорила, что ничего не может пойти не так.", 
+        tense: "Past Simple + Present Simple" },
+        // 12
+        { en: "When you're in love, what can go wrong?", 
+        ru: "Когда ты влюблен, что может пойти не так?", 
+        tense: "Present Simple" },
+        // 13
+        { en: "Then she'd laugh the night time into day pushing her fear further long.", 
+        ru: "Затем она смеялась, превращая ночь в день, отгоняя свой страх дальше.", 
+        tense: "Past Simple" },
+
+
+
+
+        // 14
+        //{ en: "And then she'd shout down the line.", 
+        //ru: "А потом она кричала по телефону.", 
+        //tense: "Past Simple" },
+        // 15
+        //{ en: "Tell me she's got no more time.", 
+        //ru: "Говорила мне, что у неё больше нет времени.", 
+        //tense: "Present Simple" },
+        // 16
+        //{ en: "'Cause she's a supergirl.", 
+        //ru: "Потому что она супердевушка.", 
+        //tense: "Present Simple" },
+        // 17
+        //{ en: "And supergirls don't hide.", 
+        //ru: "А супердевушки не прячутся.", 
+        //tense: "Present Simple" },
+        
+        // 18
+       // { en: "And then she'd scream in my face.", 
+        //ru: "А потом она кричала мне в лицо.", 
+        //tense: "Past Simple" },
+        // 19
+       // { en: "Tell me to leave, leave this place.", 
+        //ru: "Говорила мне уйти, покинуть это место.", 
+        //tense: "Present Simple" },
+        // 20
+        //{ en: "'Cause she's a supergirl.", 
+        //ru: "Потому что она супердевушка.", 
+        //tense: "Present Simple" },
+        // 21
+        //{ en: "And supergirls just fly.", 
+        //ru: "А супердевушки просто летают.", 
+        //tense: "Present Simple" }
+
+
+
+
+        ];
+
+        let currentIndex = 0;
+        let voices = [];
+
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+            return voices.find(voice => voice.name === 'Google UK English Male') || voices[0];
+        }
+
+        function playAudio(text) {
+            if ('speechSynthesis' in window) {
+                if (voices.length === 0) {
+                    voices = window.speechSynthesis.getVoices();
+                }
+
+                const chosenVoice = loadVoices();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.voice = chosenVoice;
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech synthesis is not supported in your browser.");
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                voices = window.speechSynthesis.getVoices();
+            };
+        }
+
+        function setupDragAndDrop(sentence) {
+            const words = sentence.en.split(" ").sort(() => Math.random() - 0.5);
+            const wordBank = document.getElementById("wordBank");
+            const sentenceContainer = document.getElementById("sentenceContainer");
+            const instruction = document.getElementById("instruction");
+            const feedback = document.getElementById("feedback");
+            const currentTense = document.getElementById("current_tense");
+
+            // Устанавливаем текст подсказки
+            instruction.textContent = `"${sentence.ru}"`;
+
+            // Выводим время в отдельный блок
+            currentTense.textContent = `${sentence.tense}`;
+
+            wordBank.innerHTML = "";
+            sentenceContainer.innerHTML = "";
+            feedback.textContent = "";
+
+            words.forEach(word => {
+                const wordElement = document.createElement("span");
+                wordElement.textContent = word;
+                wordElement.classList.add("word");
+                wordElement.setAttribute("draggable", "true");
+                wordElement.setAttribute("data-word", word);
+
+                wordElement.addEventListener("click", () => {
+                    if (wordElement.parentElement === wordBank) {
+                        sentenceContainer.appendChild(wordElement);
+                    } else {
+                        wordBank.appendChild(wordElement);
+                    }
+                });
+
+                wordElement.addEventListener("dragstart", (event) => {
+                    event.dataTransfer.setData("text/plain", wordElement.getAttribute("data-word"));
+                    wordElement.classList.add("dragging");
+                });
+
+                wordElement.addEventListener("dragend", () => {
+                    wordElement.classList.remove("dragging");
+                    removeDropIndicators();
+                });
+
+                wordBank.appendChild(wordElement);
+            });
+
+            // Настройка drag-and-drop
+            [wordBank, sentenceContainer].forEach(container => {
+                container.addEventListener("dragover", (event) => {
+                    event.preventDefault();
+                    const draggingElement = document.querySelector(".dragging");
+                    const afterElement = getDragAfterElement(container, event.clientX);
+
+                    removeDropIndicators();
+
+                    const dropIndicator = document.createElement("div");
+                    dropIndicator.classList.add("drop-indicator");
+                    if (afterElement == null) {
+                        container.appendChild(dropIndicator);
+                    } else {
+                        container.insertBefore(dropIndicator, afterElement);
+                    }
+                });
+
+                container.addEventListener("drop", (event) => {
+                    event.preventDefault();
+                    const draggingElement = document.querySelector(".dragging");
+                    const dropIndicator = container.querySelector(".drop-indicator");
+
+                    if (dropIndicator) {
+                        container.insertBefore(draggingElement, dropIndicator);
+                        removeDropIndicators();
+                    }
+                });
+
+                container.addEventListener("dragleave", () => {
+                    removeDropIndicators();
+                });
+            });
+
+            function removeDropIndicators() {
+                document.querySelectorAll(".drop-indicator").forEach(indicator => indicator.remove());
+            }
+
+            function getDragAfterElement(container, x) {
+                const draggableElements = [...container.querySelectorAll(".word:not(.dragging)")];
+
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = x - box.left - box.width / 2;
+
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+        }
+
+
+
+        
+        document.getElementById("checkSentence").onclick = () => {
+            const userSentence = Array.from(sentenceContainer.children)
+                .map(wordElement => wordElement.textContent)
+                .join(" ");
+            const playButton = document.getElementById("playButton");
+            const feedback = document.getElementById("feedback");
+            
+            // Получаем текущее предложение
+            const sentence = sentences[currentIndex];
+
+            if (userSentence === sentence.en) {
+                playAudio(sentence.en);
+                feedback.textContent = "Right! 👍";
+                feedback.style.color = "green";
+                playButton.style.display = "inline-block"; // Показываем кнопку PLAY
+            } else {
+                feedback.textContent = "Wrong 👎";
+                feedback.style.color = "red";
+                playButton.style.display = "none"; // Скрываем кнопку PLAY
+            }
+        };
+
+        
+
+        function showNextLesson() {
+            currentIndex = (currentIndex + 1) % sentences.length;
+            setupDragAndDrop(sentences[currentIndex]);
+            changeAudio();
+
+            // Скрываем кнопку PLAY при переходе к следующему предложению
+            document.getElementById("playButton").style.display = "none";
+        }
+
+        function showPreviousLesson() {
+            currentIndex = (currentIndex - 1 + sentences.length) % sentences.length;
+            setupDragAndDrop(sentences[currentIndex]);
+            changeAudio();
+
+            // Скрываем кнопку PLAY при переходе к предыдущему предложению
+            document.getElementById("playButton").style.display = "none";
+        }
+
+
+        function changeAudio() {
+            const audioPlayer = document.getElementById("audioPlayer");
+            audioPlayer.src = `mp3/supergirl${currentIndex + 1}.mp3`;
+        }
+
+        
+    document.addEventListener("DOMContentLoaded", () => {
+        setupDragAndDrop(sentences[currentIndex]);
+
+        const playButton = document.getElementById("playButton");
+        const audioPlayer = document.getElementById("audioPlayer");
+
+        document.getElementById("generateLesson").addEventListener("click", () => {
+            showNextLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
+        });
+
+        document.getElementById("previousLesson").addEventListener("click", () => {
+            showPreviousLesson();
+            resetPlayButton(); // Сбрасываем кнопку в состояние "PLAY"
+        });
+
+        playButton.addEventListener("click", () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.textContent = "PAUSE";
+            } else {
+                audioPlayer.pause();
+                playButton.textContent = "PLAY";
+            }
+        });
+
+        audioPlayer.addEventListener("ended", () => {
+            playButton.textContent = "PLAY"; // Возвращаем текст кнопки на "PLAY" после окончания воспроизведения
+        });
+
+        function resetPlayButton() {
+            audioPlayer.pause(); // Останавливаем воспроизведение
+            audioPlayer.currentTime = 0; // Сбрасываем аудио в начало
+            playButton.textContent = "PLAY"; // Устанавливаем текст кнопки на "PLAY"
+        }
+    });
+
+
+
+
+        
+    </script>
+</body>
+</html>
